@@ -1,0 +1,6 @@
+config BR2_PACKAGE_RFM12B_LINUX
+        bool "rfm12b-linux"
+        help
+          A Linux kernel SPI-driver for the RFM12B RF module by HopeRF
+
+          https://github.com/gkaindl/rfm12b-linux

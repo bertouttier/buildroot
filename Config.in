@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL/package/rfm12b-linux/Config.in"
