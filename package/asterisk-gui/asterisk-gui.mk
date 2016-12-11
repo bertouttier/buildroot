@@ -110,8 +110,6 @@ endef
 define ASTERISK_GUI_HELP_CMDS
 endef
 
-
-
 #############################################################
 #
 # Toplevel Makefile options
