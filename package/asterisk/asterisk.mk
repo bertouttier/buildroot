@@ -209,8 +209,9 @@ rm -rf $(TARGET_DIR)/stat/var/lib/asterisk/mohmp3
 rm -rf $(TARGET_DIR)/stat/etc/asterisk/musiconhold.conf
 # asterisk-dirclean
 # rm -rf $(ASTERISK_DIR);
-cd $(ASTERISK_DIR); rm -rf config.cache configure
-$(HOST_CONFIGURE_OPTS) ./bootstrap.sh
+cd $(ASTERISK_DIR); \
+rm -rf config.cache configure; \
+$(HOST_CONFIGURE_OPTS) ./bootstrap.sh; \
 $(TARGET_CONFIGURE_OPTS) \
 ./configure \
 --target=$(GNU_TARGET_NAME) \
@@ -288,6 +289,7 @@ define ASTERISK_INSTALL_TARGET_CMDS
 # Only the files required for execution of the package have to be installed.
 # Header files, static libraries and documentation will be removed again when
 # the target filesystem is finalized.
+mkdir -p $(TARGET_DIR)/var/lib/asterisk/phoneprov
 $(TARGET_MAKE_ENV) \
 $(MAKE1) -C $(ASTERISK_DIR) \
 	GLOBAL_MAKEOPTS=$(ASTERISK_GLOBAL_MAKEOPTS) \
@@ -334,6 +336,8 @@ chmod -R 750 $(TARGET_DIR)/stat/etc/asterisk
 rm -rf $(TARGET_DIR)/etc/asterisk
 ln -sf /stat/etc/asterisk $(TARGET_DIR)/etc/asterisk
 $(INSTALL) -D -m 0755 $(ASTERISK_DIR)/configs/basic-pbx/*.conf $(TARGET_DIR)/stat/etc/asterisk
+mkdir -p $(TARGET_DIR)/var/tmp/asterisk/sounds/custom-sounds
+mkdir -p $(TARGET_DIR)/var/tmp/asterisk/agi-bin/custom-agi
 ln -sf /var/tmp/asterisk/sounds/custom-sounds $(TARGET_DIR)/stat/var/lib/asterisk/sounds/custom-sounds
 ln -sf /var/tmp/asterisk/agi-bin/custom-agi $(TARGET_DIR)/stat/var/lib/asterisk/agi-bin/custom-agi
 if [ -d $(TARGET_DIR)/usr/share/snmp/mibs ]; then \
