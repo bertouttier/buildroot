@@ -21,6 +21,7 @@ ASTERISK_EXTRAS :=
 ASTERISK_CONFIGURE_ENV :=
 ASTERISK_CONFIGURE_ARGS :=
 ASTERISK_MODULE_DIR := usr/lib/asterisk/modules
+ASTERISK_DEPENDENCIES += host-doxygen
 
 # $(call ndots start,end,dotted-string)
 dot:=.
@@ -175,10 +176,41 @@ endif
 
 define ASTERISK_CONFIGURE_CMDS
 # lists the actions to be performed to configure the package before its compilation.
-cd $(ASTERISK_DIR); \
-rm -rf config.cache configure; \
-$(HOST_CONFIGURE_OPTS) \
-./bootstrap.sh; \
+# asterisk-clean
+rm -Rf $(STAGING_DIR)/usr/include/asterisk
+rm -Rf $(TARGET_DIR)/stat/etc/asterisk
+rm -Rf $(TARGET_DIR)/etc/asterisk
+rm -Rf $(TARGET_DIR)/usr/lib/asterisk
+rm -Rf $(TARGET_DIR)/stat/var/lib/asterisk
+rm -Rf $(TARGET_DIR)/stat/var/spool/asterisk
+rm -Rf $(TARGET_DIR)/var/lib/asterisk
+rm -Rf $(TARGET_DIR)/var/spool/asterisk
+rm -f $(TARGET_DIR)/etc/init.d/asterisk
+rm -f $(TARGET_DIR)/usr/sbin/upgrade-asterisk-sounds
+rm -f $(TARGET_DIR)/usr/sbin/safe_asterisk
+rm -f $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor
+rm -f $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor-ctrl
+rm -f $(TARGET_DIR)/usr/sbin/ast_tls_cert
+rm -f $(TARGET_DIR)/usr/sbin/stereorize
+rm -f $(TARGET_DIR)/usr/sbin/streamplayer
+rm -rf $(STAGING_DIR)/usr/include/asterisk
+rm -Rf $(TARGET_DIR)/stat/var/lib/asterisk
+rm -Rf $(TARGET_DIR)/stat/var/spool/asterisk
+rm -Rf $(TARGET_DIR)/stat/etc/asterisk
+rm -f $(TARGET_DIR)/usr/share/snmp/mibs/ASTERISK-MIB.txt
+rm -f $(TARGET_DIR)/usr/share/snmp/mibs/DIGIUM-MIB.txt
+$(MAKE) -C $(ASTERISK_DIR) clean
+# rm -rf $(BUILD_DIR)/asterisk;
+# rm -rf $(BUILD_DIR)/asterisk-$(ASTERISK_VERSION);
+# asterisk-sounds-clean
+rm -rf $(TARGET_DIR)/stat/var/lib/asterisk/sounds
+# asterisk-moh-clean
+rm -rf $(TARGET_DIR)/stat/var/lib/asterisk/mohmp3
+rm -rf $(TARGET_DIR)/stat/etc/asterisk/musiconhold.conf
+# asterisk-dirclean
+# rm -rf $(ASTERISK_DIR);
+cd $(ASTERISK_DIR); rm -rf config.cache configure
+$(HOST_CONFIGURE_OPTS) ./bootstrap.sh
 $(TARGET_CONFIGURE_OPTS) \
 ./configure \
 --target=$(GNU_TARGET_NAME) \
@@ -237,7 +269,8 @@ $(TARGET_MAKE_ENV) \
 $(MAKE) -C $(ASTERISK_DIR) \
 	GLOBAL_MAKEOPTS=$(ASTERISK_GLOBAL_MAKEOPTS) \
 	USER_MAKEOPTS= \
-	ASTVARRUNDIR=/var/run/asterisk;
+	ASTVARRUNDIR=/var/run/asterisk \
+	full
 endef
 
 define HOST_ASTERISK_INSTALL_CMDS
@@ -261,47 +294,48 @@ $(MAKE1) -C $(ASTERISK_DIR) \
 	USER_MAKEOPTS=menuselect.makeopts \
 	ASTVARRUNDIR=/var/run/asterisk \
 	SOUNDS_CACHE_DIR=$(DL_DIR) \
-	DESTDIR=$(TARGET_DIR) install samples; \
+	DESTDIR=$(TARGET_DIR) samples basic-pbx progdocs install
 mv $(TARGET_DIR)/usr/include/asterisk.h \
 	 $(TARGET_DIR)/usr/include/asterisk \
-	 $(STAGING_DIR)/usr/include/ ; \
-rm -Rf $(TARGET_DIR)/usr/share/man ; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk.init $(TARGET_DIR)/etc/init.d/asterisk; \
-$(INSTALL) -D -m 0644 $(BR2_EXTERNAL)/package/asterisk/asterisk.logrotate $(TARGET_DIR)/etc/logrotate.d/asterisk; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/upgrade-asterisk-sounds $(TARGET_DIR)/usr/sbin/upgrade-asterisk-sounds; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/safe_asterisk $(TARGET_DIR)/usr/sbin/safe_asterisk; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk-sip-monitor $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk-sip-monitor-ctrl $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor-ctrl; \
-$(INSTALL) -D -m 0755 $(ASTERISK_DIR)/contrib/scripts/ast_tls_cert $(TARGET_DIR)/usr/sbin/ast_tls_cert; \
-mkdir -p $(TARGET_DIR)/stat/var/lib/asterisk; \
-mv $(TARGET_DIR)/var/lib/asterisk/* $(TARGET_DIR)/stat/var/lib/asterisk/; \
-rmdir $(TARGET_DIR)/var/lib/asterisk; \
-rm -f $(TARGET_DIR)/stat/var/lib/asterisk/astdb; \
-ln -sf /var/db/astdb $(TARGET_DIR)/stat/var/lib/asterisk/astdb; \
+	 $(STAGING_DIR)/usr/include/
+# rm -Rf $(TARGET_DIR)/usr/share/man
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk.init $(TARGET_DIR)/etc/init.d/asterisk
+$(INSTALL) -D -m 0644 $(BR2_EXTERNAL)/package/asterisk/asterisk.logrotate $(TARGET_DIR)/etc/logrotate.d/asterisk
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/upgrade-asterisk-sounds $(TARGET_DIR)/usr/sbin/upgrade-asterisk-sounds
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/safe_asterisk $(TARGET_DIR)/usr/sbin/safe_asterisk
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk-sip-monitor $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/asterisk-sip-monitor-ctrl $(TARGET_DIR)/usr/sbin/asterisk-sip-monitor-ctrl
+$(INSTALL) -D -m 0755 $(ASTERISK_DIR)/contrib/scripts/ast_tls_cert $(TARGET_DIR)/usr/sbin/ast_tls_cert
+mkdir -p $(TARGET_DIR)/stat/var/lib/asterisk
+mv $(TARGET_DIR)/var/lib/asterisk/* $(TARGET_DIR)/stat/var/lib/asterisk/
+rm -rf $(TARGET_DIR)/var/lib/asterisk
+rm -f $(TARGET_DIR)/stat/var/lib/asterisk/astdb
+ln -sf /var/db/astdb $(TARGET_DIR)/stat/var/lib/asterisk/astdb
 if [ $(ASTERISK_VERSION_SINGLE)=1 ]; then \
 	rm -f $(TARGET_DIR)/stat/var/lib/asterisk/astdb.sqlite3; \
 	ln -sf /var/db/astdb.sqlite3 $(TARGET_DIR)/stat/var/lib/asterisk/astdb.sqlite3; \
 fi; \
-mkdir -p $(TARGET_DIR)/stat/var/spool; \
-mv $(TARGET_DIR)/var/spool/asterisk $(TARGET_DIR)/stat/var/spool/ ; \
-touch -c $(TARGET_DIR)/$(ASTERISK_TARGET_BINARY); \
-rm -f $(TARGET_DIR)/etc/asterisk/*.old; \
-rm -f $(TARGET_DIR)/stat/var/lib/asterisk/mohmp3/*; \
+mkdir -p $(TARGET_DIR)/stat/var/spool
+mv $(TARGET_DIR)/var/spool/asterisk $(TARGET_DIR)/stat/var/spool/
+touch -c $(TARGET_DIR)/$(ASTERISK_TARGET_BINARY)
+rm -f $(TARGET_DIR)/etc/asterisk/*.old
+rm -f $(TARGET_DIR)/stat/var/lib/asterisk/mohmp3/*
 # Remove unwanted MOH sound files to save space
-rm -f $(TARGET_DIR)/stat/var/lib/asterisk/moh/macroform-robot_dity.*; \
-rm -f $(TARGET_DIR)/stat/var/lib/asterisk/moh/macroform-cold_day.*; \
-if [ !$(wildcard package/asterisk/config/extensions.conf) ]; then \
+rm -f $(TARGET_DIR)/stat/var/lib/asterisk/moh/macroform-robot_dity.*
+rm -f $(TARGET_DIR)/stat/var/lib/asterisk/moh/macroform-cold_day.*
+if [ -d $(BR2_EXTERNAL)/package/asterisk/config ]; then \
 	mkdir -p $(TARGET_DIR)/stat/etc/asterisk; \
-	rsync -a --exclude=".svn" $(BR2_EXTERNAL)/package/asterisk/config/* $(TARGET_DIR)/stat/etc/asterisk/; \
+	rsync -a --exclude=".svn" $(BR2_EXTERNAL)/package/asterisk/config/ $(TARGET_DIR)/stat/etc/asterisk/; \
 else \
-	mv $(TARGET_DIR)/etc/asterisk $(TARGET_DIR)/stat/etc/; \
+	cp -R $(TARGET_DIR)/etc/asterisk $(TARGET_DIR)/stat/etc/; \
 fi; \
-$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/logger.conf $(TARGET_DIR)/stat/etc/asterisk/logger.conf; \
-chmod -R 750 $(TARGET_DIR)/stat/etc/asterisk; \
-rm -rf $(TARGET_DIR)/etc/asterisk; \
-ln -sf /tmp/etc/asterisk $(TARGET_DIR)/etc/asterisk; \
-ln -sf /var/tmp/asterisk/sounds/custom-sounds $(TARGET_DIR)/stat/var/lib/asterisk/sounds/custom-sounds; \
-ln -sf /var/tmp/asterisk/agi-bin/custom-agi $(TARGET_DIR)/stat/var/lib/asterisk/agi-bin/custom-agi; \
+$(INSTALL) -D -m 0755 $(BR2_EXTERNAL)/package/asterisk/logger.conf $(TARGET_DIR)/stat/etc/asterisk/logger.conf
+chmod -R 750 $(TARGET_DIR)/stat/etc/asterisk
+rm -rf $(TARGET_DIR)/etc/asterisk
+ln -sf /stat/etc/asterisk $(TARGET_DIR)/etc/asterisk
+$(INSTALL) -D -m 0755 $(ASTERISK_DIR)/configs/basic-pbx/*.conf $(TARGET_DIR)/stat/etc/asterisk
+ln -sf /var/tmp/asterisk/sounds/custom-sounds $(TARGET_DIR)/stat/var/lib/asterisk/sounds/custom-sounds
+ln -sf /var/tmp/asterisk/agi-bin/custom-agi $(TARGET_DIR)/stat/var/lib/asterisk/agi-bin/custom-agi
 if [ -d $(TARGET_DIR)/usr/share/snmp/mibs ]; then \
 	$(INSTALL) -D -m 0644 $(BR2_EXTERNAL)/package/asterisk/mibs/ASTERISK-MIB.txt $(TARGET_DIR)/usr/share/snmp/mibs/ ; \
 	$(INSTALL) -D -m 0644 $(BR2_EXTERNAL)/package/asterisk/mibs/DIGIUM-MIB.txt $(TARGET_DIR)/usr/share/snmp/mibs/ ; \

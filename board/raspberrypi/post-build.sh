@@ -33,3 +33,5 @@ function make_real_dir
 # test for some key directories under rund
 make_real_dir /etc/dropbear
 make_real_dir /boot
+make_real_dir /var/db
+make_real_dir /var/tmp/asterisk/sounds/custom-sounds

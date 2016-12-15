@@ -22,8 +22,7 @@ endif
 
 define ASTERISK_GUI_CONFIGURE_CMDS
 # lists the actions to be performed to configure the package before its compilation.
-cd $(ASTERISK_GUI_DIR); \
-rm -rf config.cache; \
+cd $(ASTERISK_GUI_DIR); rm -rf config.cache; \
 $(TARGET_CONFIGURE_OPTS) CC_FOR_BUILD=$(HOSTCC) \
 CFLAGS='$(TARGET_CFLAGS)' \
 ./configure \
@@ -36,7 +35,7 @@ CFLAGS='$(TARGET_CFLAGS)' \
 	--includedir=/usr/include \
 	--datadir=/usr/share \
 	--sysconfdir=/etc \
-	$(ASTERISK_GUI_CONFIG);
+	$(ASTERISK_GUI_CONFIG)
 endef
 
 define ASTERISK_GUI_BUILD_CMDS
@@ -45,7 +44,7 @@ $(MAKE) -C $(ASTERISK_GUI_DIR) \
 	HOSTCC=gcc $(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	ASTETCDIR=$(TARGET_DIR)/stat/etc/asterisk \
-	ASTVARLIBDIR=$(TARGET_DIR)/stat/var/lib/asterisk;
+	ASTVARLIBDIR=$(TARGET_DIR)/stat/var/lib/asterisk
 endef
 
 define HOST_ASTERISK_GUI_INSTALL_CMDS
@@ -67,7 +66,7 @@ $(MAKE1) -C $(ASTERISK_GUI_DIR) \
 	HOSTCC=gcc $(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	ASTETCDIR=$(TARGET_DIR)/stat/etc/asterisk \
-	ASTVARLIBDIR=$(TARGET_DIR)/stat/var/lib/asterisk install; \
+	ASTVARLIBDIR=$(TARGET_DIR)/stat/var/lib/asterisk install
 NL=$$'\\\n'; \
 $(SED) "/^; Third party application call management/i $${NL}; Modified for use with asterisk-gui on AstLinux$${NL};$${NL}; THIS IS INSECURE! CHANGE THE PASSWORD!!!$${NL};" \
 		-e 's/^enabled = no$$/enabled = yes/' \
@@ -76,9 +75,8 @@ $(SED) "/^; Third party application call management/i $${NL}; Modified for use w
 $(SED) 's/^;enabled=yes$$/enabled=yes/' \
 		-e 's/^;enablestatic=yes$$/enablestatic=yes/' \
 		-e 's/^bindaddr=127.0.0.1$$/bindaddr=0.0.0.0/' \
-	$(TARGET_DIR)/stat/etc/asterisk/http.conf; \
-	ln -snf /var/tmp/asterisk-gui \
-	$(TARGET_DIR)/stat/var/lib/asterisk/static-http/config/tmp;
+	$(TARGET_DIR)/stat/etc/asterisk/http.conf
+ln -snf /var/tmp/asterisk-gui $(TARGET_DIR)/stat/var/lib/asterisk/static-http/config/tmp;
 endef
 
 define ASTERISK_GUI_INSTALL_STAGING_CMDS

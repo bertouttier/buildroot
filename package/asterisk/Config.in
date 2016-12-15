@@ -7,6 +7,7 @@ config BR2_PACKAGE_ASTERISK
 	select BR2_PACKAGE_LIBTOOL
 	select BR2_PACKAGE_UTIL_LINUX
 	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_HOST_DOXYGEN
 	help
 		Asterisk - the Open Source PBX
 
