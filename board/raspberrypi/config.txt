@@ -1,5 +1,3 @@
-
-
 # See http://elinux.org/RPiconfig for a description of config.txt syntax
 kernel=zImage
 
@@ -15,3 +13,6 @@ disable_overscan=1
 gpu_mem_256=32
 gpu_mem_512=32
 gpu_mem_1024=32
+
+# enable rpi3 ttyS0 serial console
+enable_uart=1

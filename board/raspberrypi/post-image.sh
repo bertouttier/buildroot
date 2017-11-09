@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
 
 BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"
@@ -9,11 +11,6 @@ GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 cp "${BOARD_DIR}/cmdline.txt" "${BINARIES_DIR}/rpi-firmware"
 # Adjust the config.txt
 cp "${BOARD_DIR}/config.txt" "${BINARIES_DIR}/rpi-firmware"
-
-# Mark the kernel as DT-enabled
-mkdir -p "${BINARIES_DIR}/kernel-marked"
-${HOST_DIR}/usr/bin/mkknlimg "${BINARIES_DIR}/zImage" \
-	"${BINARIES_DIR}/kernel-marked/zImage"
 
 rm -rf "${GENIMAGE_TMP}"
 

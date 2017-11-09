@@ -10,10 +10,6 @@ if [ -f "${TARGET_DIR}/etc/inittab" ]; then
   tty1::respawn:/sbin/getty -L tty1 0 vt100 # HDMI console' ${TARGET_DIR}/etc/inittab
 fi
 
-# add boot partition mount
-install -T -m 0644 ./system/skeleton/etc/fstab ${TARGET_DIR}/etc/fstab
-echo '/dev/mmcblk0p1	/boot		vfat	defaults,rw	0	0' >> ${TARGET_DIR}/etc/fstab
-
 function make_real_dir
 {
   DIR="$1"
@@ -35,3 +31,6 @@ make_real_dir /etc/dropbear
 make_real_dir /boot
 make_real_dir /var/db
 make_real_dir /var/tmp/asterisk/sounds/custom-sounds
+
+# add boot partition mount
+grep -q "^/dev/mmcblk0p1" $TARGET_DIR/etc/fstab || echo "/dev/mmcblk0p1	/boot		vfat	defaults,rw	0	0" >> $TARGET_DIR/etc/fstab
