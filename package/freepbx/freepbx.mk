@@ -3,11 +3,11 @@
 # freepbx
 #
 ##############################################################
-FREEPBX_VERSION := 13.0
-FREEPBX_SOURCE := freepbx-$(FREEPBX_VERSION)-latest.tgz
-FREEPBX_SITE := http://mirror.freepbx.org/modules/packages/freepbx
-FREEPBX_DIR := $(BUILD_DIR)/freepbx-$(ASTERISK_VERSION)
-
+FREEPBX_VERSION = 13.0
+FREEPBX_SOURCE = freepbx-$(FREEPBX_VERSION)-latest.tgz
+FREEPBX_SITE = http://mirror.freepbx.org/modules/packages/freepbx
+FREEPBX_DIR = $(BUILD_DIR)/freepbx-$(ASTERISK_VERSION)
+FREEPBX_DEPENDENCIES = asterisk php sqlite host-sqlite
 
 # define FREEPBX_EXTRACT_CMDS
 # # lists the actions to be performed to extract the package.
@@ -44,8 +44,41 @@ define FREEPBX_INSTALL_TARGET_CMDS
 # Only the files required for execution of the package have to be installed.
 # Header files, static libraries and documentation will be removed again when
 # the target filesystem is finalized.
-mkdir -p $(TARGET_DIR)/usr/src; \
+mkdir -p $(TARGET_DIR)/var/www/html
+mkdir -p $(TARGET_DIR)/etc/asterisk
+mkdir -p $(TARGET_DIR)/usr/lib/asterisk/modules
+mkdir -p $(TARGET_DIR)/var/lib/asterisk/agi-bin
+mkdir -p $(TARGET_DIR)/var/lib/asterisk/bin
+mkdir -p $(TARGET_DIR)/var/lib/asterisk/playback
+mkdir -p $(TARGET_DIR)/var/www/cgi-bin
+mkdir -p $(TARGET_DIR)/var/spool/asterisk
+mkdir -p $(TARGET_DIR)/var/run/asterisk
+mkdir -p $(TARGET_DIR)/var/log/asterisk
+mkdir -p $(TARGET_DIR)/usr/sbin
+mkdir -p $(TARGET_DIR)/usr/src
 cp -R $(FREEPBX_DIR)/* $(TARGET_DIR)/usr/src
+# 
+# mkdir -p $(TARGET_DIR)/var/lib/asterisk; \
+# cat $(FREEPBX_DIR)/installlib/SQL/cdr.sql | $(HOST_DIR)/usr/bin/sqlite3 $(TARGET_DIR)/var/lib/asterisk/freepbx.db; \
+# cat $(FREEPBX_DIR)/installlib/SQL/asterisk.sql | $(HOST_DIR)/usr/bin/sqlite3 $(TARGET_DIR)/var/lib/asterisk/freepbx.db
+
+cd $(TARGET_DIR)/usr/src && ./install -n \
+	--dbengine=sqlite3 \
+	--dbuser=root \
+	--user=root \
+	--group=root \
+	--webroot=$(TARGET_DIR)/var/www/html \
+	--astetcdir=$(TARGET_DIR)/etc/asterisk \
+	--astmoddir=$(TARGET_DIR)/usr/lib/asterisk/modules \
+	--astvarlibdir=$(TARGET_DIR)/var/lib/asterisk \
+	--astagidir=$(TARGET_DIR)/var/lib/asterisk/agi-bin \
+	--astspooldir=$(TARGET_DIR)/var/spool/asterisk \
+	--astrundir=$(TARGET_DIR)/var/run/asterisk \
+	--astlogdir=$(TARGET_DIR)/var/log/asterisk \
+	--ampbin=$(TARGET_DIR)/var/lib/asterisk/bin \
+	--ampsbin=$(TARGET_DIR)/usr/sbin \
+	--ampcgibin=$(TARGET_DIR)/var/www/cgi-bin \
+	--ampplayback=$(TARGET_DIR)/var/lib/asterisk/playback
 endef
 
 define FREEPBX_INSTALL_STAGING_CMDS
@@ -53,7 +86,6 @@ define FREEPBX_INSTALL_STAGING_CMDS
 # when the package is a target package. The package must install its files to the directory
 # given by $(STAGING_DIR). All development files should be installed, since they might
 # be needed to compile other packages.
-
 endef
 
 define FREEPBX_INSTALL_IMAGES_CMDS

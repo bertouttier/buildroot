@@ -1,5 +1,9 @@
 config BR2_PACKAGE_FREEPBX
 	bool "freepbx"
 	default n
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_HOST_SQLITE
+	select BR2_PACKAGE_ASTERISK
+	select BR2_PACKAGE_PHP
 	help
-		Freepbx
+	  Freepbx
