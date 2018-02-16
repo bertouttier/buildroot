@@ -18,7 +18,7 @@ define FREEPBX_BUILD_CMDS
 # lists the actions to be performed to compile the package.
 endef
 
-FILES = confbridge_custom.conf \
+INCLUDEFILES = confbridge_custom.conf \
 iax_custom_post.conf \
 iax_custom.conf \
 sip_notify_custom.conf \
@@ -131,11 +131,11 @@ define FREEPBX_INSTALL_TARGET_CMDS
 
 	cp $(FREEPBX_PKGDIR)/voicemail.conf $(TARGET_DIR)/etc/asterisk/voicemail.conf
 	
-	for f in $(FILES) ; do \
-    echo "touching $$f" ; \
-    touch $(TARGET_DIR)/etc/asterisk/$$f ; \
+	for f in $(INCLUDEFILES) ; do \
+    if [ ! -e $(TARGET_DIR)/etc/asterisk/$$f ]; then \
+      touch $(TARGET_DIR)/etc/asterisk/$$f ; \
+    fi \
   done
-
 endef
 
 define FREEPBX_INSTALL_INIT_SYSV
