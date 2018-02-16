@@ -3,8 +3,8 @@
 # freepbx
 #
 ##############################################################
-FREEPBX_VERSION = 13.0
-FREEPBX_SOURCE = freepbx-$(FREEPBX_VERSION)-latest.tgz
+FREEPBX_VERSION = 14.0.1.20
+FREEPBX_SOURCE = freepbx-$(FREEPBX_VERSION).tgz
 FREEPBX_SITE = http://mirror.freepbx.org/modules/packages/freepbx
 FREEPBX_DIR = $(BUILD_DIR)/freepbx-$(ASTERISK_VERSION)
 FREEPBX_DEPENDENCIES = asterisk php sqlite host-sqlite
