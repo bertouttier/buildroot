@@ -9,15 +9,6 @@ FREEPBX_SITE = http://mirror.freepbx.org/modules/packages/freepbx
 FREEPBX_DIR = $(BUILD_DIR)/freepbx-$(ASTERISK_VERSION)
 FREEPBX_DEPENDENCIES = asterisk php sqlite host-sqlite
 
-define FREEPBX_CONFIGURE_CMDS
-# lists the actions to be performed to configure the package before its compilation.
-# asterisk-clean
-endef
-
-define FREEPBX_BUILD_CMDS
-# lists the actions to be performed to compile the package.
-endef
-
 INCLUDEFILES = confbridge_custom.conf \
 iax_custom_post.conf \
 iax_custom.conf \
@@ -73,13 +64,6 @@ motif_custom.conf \
 cdr.conf
 
 define FREEPBX_INSTALL_TARGET_CMDS
-# lists the actions to be performed to install the package
-# to the target directory, when the package is a target package.
-# The package must install its files to the directory given by $(TARGET_DIR).
-# Only the files required for execution of the package have to be installed.
-# Header files, static libraries and documentation will be removed again when
-# the target filesystem is finalized.
-
 	# install config files
 	cp $(FREEPBX_PKGDIR)/asterisk.conf $(TARGET_DIR)/etc/asterisk/asterisk.conf
 	cp $(FREEPBX_PKGDIR)/amportal.conf $(TARGET_DIR)/etc/asterisk/amportal.conf
@@ -132,24 +116,11 @@ define FREEPBX_INSTALL_TARGET_CMDS
 	cp $(FREEPBX_PKGDIR)/voicemail.conf $(TARGET_DIR)/etc/asterisk/voicemail.conf
 	
 	for f in $(INCLUDEFILES) ; do \
-    if [ ! -e $(TARGET_DIR)/etc/asterisk/$$f ]; then \
-      touch $(TARGET_DIR)/etc/asterisk/$$f ; \
-    fi \
-  done
+		if [ ! -e $(TARGET_DIR)/etc/asterisk/$$f ]; then \
+			touch $(TARGET_DIR)/etc/asterisk/$$f ; \
+		fi \
+	done
 endef
-
-define FREEPBX_INSTALL_INIT_SYSV
-endef
-
-define FREEPBX_INSTALL_INIT_SYSTEMD
-# list the actions to install init scripts either for the systemV-like init systems (busybox, sysvinit, etc.)
-# or for the systemd units. These commands will be run only when the relevant init system is installed
-# (i.e. if systemd is selected as the init system in the configuration, only FREEPBX_INSTALL_INIT_SYSTEMD will be run).
-endef
-
-define FREEPBX_HELP_CMDS
-endef
-
 
 #############################################################
 #
