@@ -1,3 +1,4 @@
 source "$BR2_EXTERNAL_BERT_PATH/package/rfm12b-linux/Config.in"
 source "$BR2_EXTERNAL_BERT_PATH/package/freepbx/Config.in"
 source "$BR2_EXTERNAL_BERT_PATH/package/asterisk-gui/Config.in"
+source "$BR2_EXTERNAL_BERT_PATH/package/vcontrold/Config.in"
