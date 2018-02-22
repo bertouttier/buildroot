@@ -1,0 +1,4 @@
+config BR2_PACKAGE_UNIFI_CONTROLLER
+	bool "unifi-controller"
+	help
+	  Ubiquiti networks unifi controller
