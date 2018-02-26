@@ -4,7 +4,7 @@
 #
 ##############################################################
 
-PYSUNSPEC_VERSION = v.1.0.8
+PYSUNSPEC_VERSION = 5242ea9e4c687061cc0b8de4417b1943ed8f9264
 PYSUNSPEC_SITE = https://github.com/sunspec/pysunspec.git
 PYSUNSPEC_SITE_METHOD = git
 PYSUNSPEC_GIT_SUBMODULES = YES
