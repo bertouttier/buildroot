@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PYSUNSPEC
+	bool "pySynSpec"
+	depends on BR2_PACKAGE_PYTHON3
+	help
+	  pySunSpec
+	  https://github.com/sunspec/pysunspec

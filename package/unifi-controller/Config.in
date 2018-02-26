@@ -1,4 +1,5 @@
 config BR2_PACKAGE_UNIFI_CONTROLLER
 	bool "unifi-controller"
+	depends on BR2_PACKAGE_JAMVM
 	help
 	  Ubiquiti networks unifi controller
