@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PYTHON_APPDAEMON
+	bool "python-appdaemon"
+  select BR2_PACKAGE_PYTHON3
+	help
+	  AppDaemon is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant home automation software. As of release 2.0.0 it also provides a configurable dashboard (HADashboard) suitable for wall mounted tablets.
+
+	  https://github.com/home-assistant/appdaemon
